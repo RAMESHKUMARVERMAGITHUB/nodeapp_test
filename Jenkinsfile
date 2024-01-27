@@ -61,7 +61,7 @@ pipeline {
         }
         stage('docker deploy'){
             steps{
-                sh "docker run -d -p 8080:8080 rameshkumarverma/nodeapp_test:latest" 
+                sh "docker run -d -p 3000:3000 rameshkumarverma/nodeapp_test:latest" 
             }
         }
         stage('Deploy to Kubernets'){
