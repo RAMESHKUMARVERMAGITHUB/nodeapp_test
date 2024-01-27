@@ -15,14 +15,14 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/RAMESHKUMARVERMAGITHUB/demo_nodejs_webpage.git'
+                git branch: 'master', url: 'https://github.com/RAMESHKUMARVERMAGITHUB/nodeapp_test.git'
             }
         }
         stage("Sonarqube Analysis") {
             steps {
                 withSonarQubeEnv('sonar-server') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=demo_nodejs_webpage \
-                    -Dsonar.projectKey=demo_nodejs_webpage'''
+                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=nodeapp_test \
+                    -Dsonar.projectKey=nodeapp_test'''
                 }
             }
         }
@@ -47,21 +47,21 @@ pipeline {
              steps{
                  script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                      sh "docker build -t rameshkumarverma/demo_nodejs_webpage:latest ."
-                    //   sh "docker tag demo_nodejs_webpage rameshkumarverma/demo_nodejs_webpage:latest "
-                      sh "docker push rameshkumarverma/demo_nodejs_webpage:latest "
+                      sh "docker build -t rameshkumarverma/nodeapp_test:latest ."
+                    //   sh "docker tag nodeapp_test rameshkumarverma/nodeapp_test:latest "
+                      sh "docker push rameshkumarverma/nodeapp_test:latest "
                     }
                 }
             }
         }
         stage("TRIVY Image Scan"){
             steps{
-                sh "trivy image rameshkumarverma/demo_nodejs_webpage:latest > trivyimage.txt" 
+                sh "trivy image rameshkumarverma/nodeapp_test:latest > trivyimage.txt" 
             }
         }
         stage('docker deploy'){
             steps{
-                sh "docker run -d -p 8080:8080 rameshkumarverma/demo_nodejs_webpage:latest" 
+                sh "docker run -d -p 8080:8080 rameshkumarverma/nodeapp_test:latest" 
             }
         }
         stage('Deploy to Kubernets'){
@@ -72,7 +72,7 @@ pipeline {
                         // sh 'kubectl delete --all pods'
                         // sh 'kubectl apply -f deployment.yml'
                         // sh 'kubectl apply -f service.yml'
-                          sh 'kubectl apply -f k8s.yml'
+                          sh 'kubectl apply -f deploymentservice.yml'
                         }   
                     // }
                 }
